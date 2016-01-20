@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import sys, re, math, glob
 
+already = re.findall(r'Lemma prime.* : prime (\d+).', open('coqprime/examples/BasePrimes.v').read())
+
 two_ints = lambda t: (int(t[0]), int(t[1]))
 parse_factor = lambda f: two_ints(f.split('^')) if '^' in f else (int(f), 1)
 numeric = lambda s: [int(x) for x in re.findall(r'\d+', s)]
@@ -13,6 +15,8 @@ for file in sorted(glob.glob('safecurves.cr.yp.to/proof/*.html'), key=numeric):
     with open(file) as f:
         htmlproof = f.read()
     n = re.findall(r'n = (\d+)', htmlproof)[0]
+    if n in already:
+        continue
     b = re.findall(r'b = (\d+)', htmlproof)[0]
 
     factors = [] # list string
